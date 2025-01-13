@@ -82,6 +82,38 @@ resource "aws_iam_policy" "lambda_exec_role" {
 }
 POLICY
 }
+provider "aws" {
+  region = "us-east-1" # Change as needed
+}
+
+resource "aws_cloudwatch_metric_alarm" "lambda_error_alarm" {
+  alarm_name          = "LambdaErrorAlarm"
+  comparison_operator = "GreaterThanThreshold"
+  evaluation_periods  = 1
+  metric_name         = "Errors" # Lambda metric for errors
+  namespace           = "AWS/Lambda"
+  period              = 60
+  statistic           = "Sum"
+  threshold           = 1
+
+  alarm_description   = "Alarm when Lambda function errors exceed the threshold"
+  alarm_actions       = [aws_sns_topic.lambda_alarm_topic.arn] # SNS Topic ARN
+  ok_actions          = [aws_sns_topic.lambda_alarm_topic.arn] # SNS Topic ARN
+  dimensions = {
+    FunctionName = "your-lambda-function-name" # Replace with your Lambda function name
+  }
+}
+
+resource "aws_sns_topic" "lambda_alarm_topic" {
+  name = "LambdaAlarmTopic"
+}
+
+resource "aws_sns_topic_subscription" "lambda_alarm_subscription" {
+  topic_arn = aws_sns_topic.lambda_alarm_topic.arn
+  protocol  = "email"
+  endpoint  = "your-email@example.com" # Replace with your email address
+}
+
 
 resource "aws_iam_role_policy_attachment" "lambda_policy" {
   role       = aws_iam_role.lambda_exec.name
