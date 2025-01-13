@@ -100,7 +100,7 @@ resource "aws_cloudwatch_metric_alarm" "lambda_error_alarm" {
   alarm_actions       = [aws_sns_topic.lambda_alarm_topic.arn] # SNS Topic ARN
   ok_actions          = [aws_sns_topic.lambda_alarm_topic.arn] # SNS Topic ARN
   dimensions = {
-    FunctionName = "your-lambda-function-name" # Replace with your Lambda function name
+    FunctionName = "http_api_lambda" # Replace with your Lambda function name
   }
 }
 
