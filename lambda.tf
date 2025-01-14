@@ -82,9 +82,6 @@ resource "aws_iam_policy" "lambda_exec_role" {
 }
 POLICY
 }
-provider "aws" {
-  region = "us-east-1" # Change as needed
-}
 
 resource "aws_cloudwatch_metric_alarm" "lambda_error_alarm" {
   alarm_name          = "LambdaErrorAlarm"
